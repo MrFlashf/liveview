@@ -10,7 +10,8 @@ defmodule PentoWeb.WrongLive do
   def handle_params(_params, _session, socket) do
     winning_number = generate_winning_number()
 
-    {:noreply, assign(socket, score: 0, message: "Guess a number", winning_number: winning_number)}
+    {:noreply,
+     assign(socket, score: 0, message: "Guess a number", winning_number: winning_number)}
   end
 
   def render(assigns) do

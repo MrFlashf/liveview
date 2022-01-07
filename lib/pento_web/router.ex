@@ -22,6 +22,7 @@ defmodule PentoWeb.Router do
 
     live "/guess", WrongLive
 
+    get "/", PageController, :index
     # live "/", PageLive, :index
   end
 
