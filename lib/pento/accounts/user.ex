@@ -5,12 +5,15 @@ defmodule Pento.Accounts.User do
   @derive {Inspect, except: [:password]}
   schema "users" do
     field :email, :string
+    field :username, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
 
     timestamps()
   end
+
+  @fields ~w(email password username)a
 
   @doc """
   A user changeset for registration.
@@ -31,8 +34,9 @@ defmodule Pento.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, @fields)
     |> validate_email()
+    |> validate_username()
     |> validate_password(opts)
   end
 
@@ -45,10 +49,16 @@ defmodule Pento.Accounts.User do
     |> unique_constraint(:email)
   end
 
+  defp validate_username(changeset) do
+    changeset
+    |> validate_required([:username])
+    |> validate_length(:username, min: 3, max: 16)
+  end
+
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 80)
+    |> validate_length(:password, min: 8, max: 80)
     # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
     # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
@@ -68,6 +78,14 @@ defmodule Pento.Accounts.User do
     end
   end
 
+  @spec email_changeset(
+          {map, map}
+          | %{
+              :__struct__ => atom | %{:__changeset__ => map, optional(any) => any},
+              optional(atom) => any
+            },
+          :invalid | %{optional(:__struct__) => none, optional(atom | binary) => any}
+        ) :: Ecto.Changeset.t()
   @doc """
   A user changeset for changing the email.
 

@@ -1,0 +1,18 @@
+<h1> Search products by SKU </h1>
+ 
+ <.form
+    let={f}
+    for={@changeset}
+    id="search-product-form"
+    phx-change="validate"
+    phx-submit="search">
+
+    <%= label f, :sku %>
+    <%= text_input f, :sku %>
+    <%= error_tag f, :sku %>
+  
+      <div>
+      <%= submit "Search", phx_disable_with: "Searching..." %>
+    </div>
+  </.form>
+  
